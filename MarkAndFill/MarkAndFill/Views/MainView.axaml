@@ -1,0 +1,178 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:modelviewmodels="using:MarkAndFill.ViewModels.ModelViewModels"
+             xmlns:vm="using:MarkAndFill.ViewModels"
+             xmlns:rxui="clr-namespace:ReactiveUI;assembly=ReactiveUI"
+             xmlns:avalonia="http://reactiveui.net"
+             xmlns:converters="using:MarkAndFill.Base.Converters"
+             mc:Ignorable="d" d:DesignWidth="1920" d:DesignHeight="1080"
+             x:Class="MarkAndFill.Views.MainView"
+             x:DataType="vm:MainViewModel"
+             Margin="20">
+    <Design.DataContext>
+        <vm:MainViewModel />
+    </Design.DataContext>
+    <UserControl.Resources>
+        <converters:ColorToBrushConverter x:Key="ColorToBrushConverter"/>
+        <converters:TwoParamsConverter x:Key="TwoParamsConverter"/>
+    </UserControl.Resources>
+
+    <avalonia:RoutedViewHost Router="{Binding Router}" >
+        <avalonia:RoutedViewHost.DefaultContent>
+            <Grid RowDefinitions="*" >
+
+                <Grid ColumnDefinitions="1.2* 4* 1.2*" ShowGridLines="False" >
+                    <Panel Grid.Column="0" Background="#D9D9D9" Width="400" Margin="20 0 0 0"/>
+                    <StackPanel Grid.Column="0" Margin="20" HorizontalAlignment="Stretch" Spacing="30"
+                                VerticalAlignment="Stretch" >
+                        <TextBlock Text="Logo" FontSize="28" FontFamily="Inter" FontWeight="Bold" />
+                        <Button Content="&#9679;  Создать" HorizontalAlignment="Stretch" Padding="16"
+                                HorizontalContentAlignment="Center" FontSize="20" FontFamily="Inter"
+                                FontWeight="Medium" Foreground="White" Background="#585858"/>
+                        <StackPanel Spacing="20">
+                            <TextBlock Text="Группы" FontFamily="Inter" FontSize="24"
+                                       FontWeight="Medium"/>
+                            <Button Content="&#9679;  Все" HorizontalAlignment="Stretch" Padding="16"
+                                    HorizontalContentAlignment="Left" FontSize="20" FontFamily="Inter"
+                                    FontWeight="Medium" Foreground="White" Background="#585858"
+                                    Command="{Binding AllGroupsCommand}"/>
+                            <ScrollViewer>
+                                <ItemsControl ItemsSource="{Binding Groups}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Spacing="20"></StackPanel>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="modelviewmodels:FileGroupViewModel">
+                                            <Button Content="{Binding GroupName, StringFormat='&#9679; \{0}'}" HorizontalAlignment="Stretch" Padding="16"
+                                                    HorizontalContentAlignment="Left" FontSize="20" FontFamily="Inter"
+                                                    FontWeight="Medium" Foreground="White" Background="#585858"
+                                                    Command="{Binding $parent[ItemsControl].((vm:MainViewModel)DataContext).ConcreteGroupCommand}"
+                                                    CommandParameter="{Binding .}"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                            <Button Content="&#9679;  Новая группа" HorizontalAlignment="Stretch" Padding="16"
+                                    HorizontalContentAlignment="Left" FontSize="20" FontFamily="Inter"
+                                    FontWeight="Medium" Foreground="White" Background="#585858"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <Panel Grid.Column="1" Background="White"/>
+                    <Grid Grid.Column="1" Margin="40"
+                          RowDefinitions="auto 30 *">
+                        <TextBlock Text="Последние файлы" FontFamily="Inter"
+                                   FontSize="24" FontWeight="Medium"/>
+                        <ListBox Grid.Row="2" Background="white" ItemsSource="{Binding FileTemplates}">
+                            <ListBox.DataTemplates >
+                                <DataTemplate DataType="modelviewmodels:FileTemplateViewModel">
+                                    <!--0  1   2  3  4  5   6  7   8  9  10-->
+                                    <Grid ColumnDefinitions="52 12 348 40 52 30 160 30 240 40 52"
+                                          RowDefinitions="52">
+                                        <TextBlock Text="{Binding FileTypeABS}" Background="{Binding FileTypeColor, Converter={StaticResource ColorToBrushConverter}}" Padding="0 8 0 0"
+                                                   Foreground="White" TextAlignment="Center"
+                                                   FontFamily="Inter"
+                                                   FontWeight="Medium" FontSize="25"/>
+                                        <TextBlock Grid.Column="2" Text="{Binding FileName}" VerticalAlignment="Center"
+                                                   FontFamily="Inter" FontSize="26"
+                                                   FontWeight="Medium"/>
+                                        <Button Grid.Column="4" Content="&#9679;" Background="Transparent"
+                                                VerticalContentAlignment="Center" Foreground="Orange" FontSize="18" Padding="0"
+                                                Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                                HorizontalContentAlignment="Center"/>
+                                        <TextBlock Grid.Column="6" Text="{Binding FileGroup.GroupName}" VerticalAlignment="Center"
+                                                   HorizontalAlignment="Stretch" FontFamily="Inter"
+                                                   FontSize="26" FontWeight="Medium"/>
+                                        <TextBlock Grid.Column="8" Text="{Binding LastChange}" VerticalAlignment="Center"
+                                                   HorizontalAlignment="Stretch" FontFamily="Inter"
+                                                   FontSize="26" FontWeight="Medium"/>
+                                        <Button Grid.Column="10"
+                                                HorizontalAlignment="Stretch"
+                                                VerticalAlignment="Stretch"
+                                                Background="Transparent"
+                                                Padding="0 -25 0 0"
+                                                HorizontalContentAlignment="Center"
+                                                FontFamily="Inter"
+                                                FontSize="48"
+                                                Content="...">
+                                            <Button.Flyout>
+                                                <Flyout Placement="Bottom">
+                                                    <StackPanel Spacing="5">
+                                                        <Button Content="Переместить в" HorizontalAlignment="Stretch">
+                                                            <Button.Flyout>
+                                                                <Flyout Placement="Left">
+                                                                    <ScrollViewer>
+                                                                        <ItemsControl ItemsSource="{Binding $parent[ListBox].((vm:MainViewModel)DataContext).Groups}">
+                                                                            <ItemsControl.ItemsPanel>
+                                                                                <ItemsPanelTemplate>
+                                                                                    <StackPanel Spacing="2"></StackPanel>
+                                                                                </ItemsPanelTemplate>
+                                                                            </ItemsControl.ItemsPanel>
+                                                                            <ItemsControl.ItemTemplate>
+                                                                                <DataTemplate DataType="modelviewmodels:FileGroupViewModel">
+                                                                                    <Button Content="{Binding GroupName}" HorizontalAlignment="Stretch"
+                                                                                            HorizontalContentAlignment="Left" FontSize="20" FontFamily="Inter"
+                                                                                            FontWeight="Medium" Foreground="White" Background="#585858"
+                                                                                            Command="{Binding $parent[ListBox].((vm:MainViewModel)DataContext).MoveTemplateToGroupCommand}">
+                                                                                        <Button.CommandParameter>
+                                                                                            <MultiBinding Converter="{StaticResource TwoParamsConverter}" >
+                                                                                                <Binding Path="."/>
+                                                                                                <Binding Path="$parent[Button].DataContext"/>
+                                                                                            </MultiBinding>
+                                                                                        </Button.CommandParameter>
+                                                                                    </Button>
+                                                                                </DataTemplate>
+                                                                            </ItemsControl.ItemTemplate>
+                                                                        </ItemsControl>
+                                                                    </ScrollViewer>
+                                                                </Flyout>
+                                                            </Button.Flyout>
+                                                        </Button>
+                                                        <Button Content="Удалить из списка" HorizontalAlignment="Stretch"
+                                                                Command="{Binding $parent[ListBox].((vm:MainViewModel)DataContext).RemoveFileTemplateCommand}"
+                                                                CommandParameter="{Binding .}"/>
+                                                        <Button Content="Открыть" HorizontalAlignment="Stretch"
+                                                                Command="{Binding $parent[ListBox].((vm:MainViewModel)DataContext).OpenFileCommand}"
+                                                                CommandParameter="{Binding .}"/>
+                                                        <Button Content="Открыть в проводнике" HorizontalAlignment="Stretch"
+                                                                Command="{Binding $parent[ListBox].((vm:MainViewModel)DataContext).OpenInExplorerCommand}"
+                                                                CommandParameter="{Binding .}"/>
+                                                    </StackPanel>
+                                                </Flyout>
+                                            </Button.Flyout>
+                                        </Button>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.DataTemplates>
+                        </ListBox>
+                    </Grid>
+
+                    <Panel Grid.Column="2" Background="White" Width="360"/>
+                    <StackPanel Spacing="20" Grid.Column="2">
+                        <DockPanel Background="#585858" Width="360" Height="360">
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
+                                        Spacing="6">
+                                <Ellipse Width="13" Height="13" Fill="White" />
+                                <TextBlock Text="Перетащи" Foreground="White" FontFamily="Inter"
+                                           FontSize="20" FontWeight="SemiBold"/>
+                            </StackPanel>
+                        </DockPanel>
+                        <Button Background="#585858" Width="360" Height="360">
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
+                                        Spacing="6">
+                                <Ellipse Width="13" Height="13" Fill="White" />
+                                <TextBlock Text="Создать" Foreground="White" FontFamily="Inter"
+                                           FontSize="20" FontWeight="SemiBold"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+
+                </Grid>
+            </Grid>
+        </avalonia:RoutedViewHost.DefaultContent>
+    </avalonia:RoutedViewHost>
+</UserControl>

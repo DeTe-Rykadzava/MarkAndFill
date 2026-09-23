@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="MarkAndFill.Tests/MarkAndFill.Tests.csproj" Id="ca43cef7-2421-4f0a-8ae6-9fa7734dff1c" />
+  <Project Path="MarkAndFill/MarkAndFill.Browser/MarkAndFill.Browser.csproj" />
+  <Project Path="MarkAndFill/MarkAndFill.Desktop/MarkAndFill.Desktop.csproj" />
+  <Project Path="MarkAndFill/MarkAndFill/MarkAndFill.csproj" />
+</Solution>

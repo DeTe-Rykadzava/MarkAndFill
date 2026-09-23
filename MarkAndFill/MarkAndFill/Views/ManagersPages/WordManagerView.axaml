@@ -1,0 +1,86 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:MarkAndFill.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="1920" d:DesignHeight="1080"
+             x:Class="MarkAndFill.Views.ManagersPages.WordManagerView"
+             x:DataType="vm:WordManagerViewModel">
+    <Grid ColumnDefinitions="* 3.68*">
+        <Panel Grid.Column="0" Background="#D9D9D9" />
+        <!-- <Panel Grid.Column="0" Width="360" HorizontalAlignment="Center" Background="Red"/> -->
+        <DockPanel Grid.Column="0" HorizontalAlignment="Stretch"
+                   VerticalAlignment="Stretch" Margin="20">
+            <StackPanel DockPanel.Dock="Top">
+                <DockPanel>
+                    <Button Margin="0" Padding="0"
+                            Background="#585858" Width="50"
+                            Height="50" HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            DockPanel.Dock="Right">
+                        <Ellipse Width="18" Height="18" Fill="#F8F5F2" />
+                    </Button>
+                    <TextBlock Text="Logo" FontSize="28"
+                               FontWeight="Bold" FontFamily="Inter" />
+                </DockPanel>
+                <StackPanel Margin="0 30 0 0"
+                            Spacing="20">
+                    <TextBlock Text="{Binding FileName}"
+                               FontSize="24"
+                               FontWeight="Medium"
+                               TextDecorations="Underline" />
+                    <TextBlock Text="{Binding FileGroup}"
+                               FontSize="24"
+                               FontWeight="Medium"
+                               TextDecorations="Underline" />
+                </StackPanel>
+            </StackPanel>
+            <StackPanel DockPanel.Dock="Bottom" Spacing="20">
+                <Button Content="&#9679;  Сохранить шаблон" HorizontalAlignment="Stretch" Padding="16"
+                        HorizontalContentAlignment="Center" FontSize="20" FontFamily="Inter"
+                        FontWeight="Medium" Foreground="White" Background="#585858" />
+                <Button Content="&#9679;  Экспорт/Конвертировать" HorizontalAlignment="Stretch" Padding="16"
+                        HorizontalContentAlignment="Center" FontSize="20" FontFamily="Inter"
+                        FontWeight="Medium" Foreground="White" Background="#585858"
+                        Command="{Binding ReplaceMarksCommand}"/>
+            </StackPanel>
+            <Border BorderThickness="1" BorderBrush="Black"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Margin="0 30">  <!-- Список тегов -->
+                <Grid HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
+                      RowDefinitions="10 Auto 20 *">
+                    <TextBlock Grid.Row="1" TextAlignment="Center"
+                               HorizontalAlignment="Stretch"
+                               Text="Найденные теги"
+                               FontSize="18"
+                               FontWeight="Medium"/>
+                    <ScrollViewer Grid.Row="3">
+                        <ItemsControl ItemsSource="{Binding Marks}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Spacing="15"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                               <DataTemplate DataType="vm:MarkViewModel">
+                                    <StackPanel Spacing="10">
+                                    <DockPanel>
+                                        <TextBlock DockPanel.Dock="Right" Text="{Binding Count}"/>
+                                        <TextBlock Text="{Binding TagName}"/>
+                                    </DockPanel>
+                                    <TextBox Text="{Binding TagValue}"/>
+                                </StackPanel>
+                               </DataTemplate> 
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+        </DockPanel>
+        <Panel Grid.Column="1" Background="#AFAFAF"
+               Margin="340 80 340 -20" />
+        <!-- превью документа из шаблона -->
+    </Grid>
+</UserControl>
