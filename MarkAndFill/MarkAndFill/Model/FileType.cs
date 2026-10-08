@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace MarkAndFill.Model;
 
-namespace MarkAndFill.Model
+public enum FileType
 {
-    public enum FileType
-    {
-        Word,
-        MarkDown
-    }
+    Word,
+    MarkDown
 }

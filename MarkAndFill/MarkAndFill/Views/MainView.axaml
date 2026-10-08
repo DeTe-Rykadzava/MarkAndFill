@@ -2,175 +2,249 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:modelviewmodels="using:MarkAndFill.ViewModels.ModelViewModels"
              xmlns:vm="using:MarkAndFill.ViewModels"
-             xmlns:rxui="clr-namespace:ReactiveUI;assembly=ReactiveUI"
+             xmlns:modelVm="using:MarkAndFill.ViewModels.ModelViewModels"
              xmlns:avalonia="http://reactiveui.net"
              xmlns:converters="using:MarkAndFill.Base.Converters"
-             mc:Ignorable="d" d:DesignWidth="1920" d:DesignHeight="1080"
+             mc:Ignorable="d" d:DesignWidth="1540" d:DesignHeight="765"
              x:Class="MarkAndFill.Views.MainView"
              x:DataType="vm:MainViewModel"
-             Margin="20">
+             Padding="30"
+             Background="#161616">
     <Design.DataContext>
         <vm:MainViewModel />
     </Design.DataContext>
+
     <UserControl.Resources>
-        <converters:ColorToBrushConverter x:Key="ColorToBrushConverter"/>
-        <converters:TwoParamsConverter x:Key="TwoParamsConverter"/>
+        <converters:TwoParamsConverter x:Key="TwoParamsConverter" />
     </UserControl.Resources>
 
-    <avalonia:RoutedViewHost Router="{Binding Router}" >
+    <avalonia:RoutedViewHost Router="{Binding Router}">
         <avalonia:RoutedViewHost.DefaultContent>
-            <Grid RowDefinitions="*" >
-
-                <Grid ColumnDefinitions="1.2* 4* 1.2*" ShowGridLines="False" >
-                    <Panel Grid.Column="0" Background="#D9D9D9" Width="400" Margin="20 0 0 0"/>
-                    <StackPanel Grid.Column="0" Margin="20" HorizontalAlignment="Stretch" Spacing="30"
-                                VerticalAlignment="Stretch" >
-                        <TextBlock Text="Logo" FontSize="28" FontFamily="Inter" FontWeight="Bold" />
-                        <Button Content="&#9679;  Создать" HorizontalAlignment="Stretch" Padding="16"
-                                HorizontalContentAlignment="Center" FontSize="20" FontFamily="Inter"
-                                FontWeight="Medium" Foreground="White" Background="#585858"/>
-                        <StackPanel Spacing="20">
-                            <TextBlock Text="Группы" FontFamily="Inter" FontSize="24"
-                                       FontWeight="Medium"/>
-                            <Button Content="&#9679;  Все" HorizontalAlignment="Stretch" Padding="16"
-                                    HorizontalContentAlignment="Left" FontSize="20" FontFamily="Inter"
-                                    FontWeight="Medium" Foreground="White" Background="#585858"
-                                    Command="{Binding AllGroupsCommand}"/>
-                            <ScrollViewer>
-                                <ItemsControl ItemsSource="{Binding Groups}">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <StackPanel Spacing="20"></StackPanel>
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate DataType="modelviewmodels:FileGroupViewModel">
-                                            <Button Content="{Binding GroupName, StringFormat='&#9679; \{0}'}" HorizontalAlignment="Stretch" Padding="16"
-                                                    HorizontalContentAlignment="Left" FontSize="20" FontFamily="Inter"
-                                                    FontWeight="Medium" Foreground="White" Background="#585858"
-                                                    Command="{Binding $parent[ItemsControl].((vm:MainViewModel)DataContext).ConcreteGroupCommand}"
-                                                    CommandParameter="{Binding .}"/>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </ScrollViewer>
-                            <Button Content="&#9679;  Новая группа" HorizontalAlignment="Stretch" Padding="16"
-                                    HorizontalContentAlignment="Left" FontSize="20" FontFamily="Inter"
-                                    FontWeight="Medium" Foreground="White" Background="#585858"/>
+            <Grid ColumnDefinitions="* 20 2*"
+                  SizeChanged="MainGrid_SizeChanged">
+                <!--side panel-->
+                <Border Grid.Column="0" HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch" BorderThickness="1"
+                        Padding="20" CornerRadius="25" ClipToBounds="True">
+                    <Border.BorderBrush>
+                        <LinearGradientBrush>
+                            <GradientStop Color="#8F8F8F" Offset="0" />
+                            <GradientStop Color="#292929" Offset="4" />
+                        </LinearGradientBrush>
+                    </Border.BorderBrush>
+                    <DockPanel>
+                        <StackPanel DockPanel.Dock="Top" Spacing="112">
+                            <TextBlock Text="Logo" FontFamily="Inter" FontSize="28"
+                                       Foreground="white" FontWeight="Bold" />
+                            <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                                    Foreground="White"
+                                    Background="#252525" Padding="22" BorderThickness="0 0 0 2"
+                                    BorderBrush="#1E7BF5"
+                                    CornerRadius="15" ClipToBounds="True"
+                                    FontFamily="Inter" FontSize="20" FontWeight="SemiBold"
+                                    VerticalContentAlignment="Center"
+                                    Command="{Binding OpenTemplateCommand}">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal" Spacing="15">
+                                        <Ellipse Fill="White" Width="18" Height="18" />
+                                        <TextBlock Text="Открыть документ" />
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
                         </StackPanel>
-                    </StackPanel>
+                        <Button DockPanel.Dock="Bottom"
+                                HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                                Foreground="White"
+                                Background="#252525" Padding="22"
+                                CornerRadius="15" ClipToBounds="True"
+                                FontFamily="Inter" FontSize="20" FontWeight="SemiBold"
+                                VerticalContentAlignment="Center">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal" Spacing="15">
+                                    <Ellipse Fill="White" Width="18" Height="18" />
+                                    <TextBlock Text="Сменить тему" />
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                        <DockPanel Margin="0 40 0 28">
+                            <TextBlock DockPanel.Dock="Top"
+                                       Text="Группы" FontFamily="Inter" FontSize="28"
+                                       Foreground="white" FontWeight="SemiBold" />
+                            <ScrollViewer Margin="0 20 0 0" VerticalScrollBarVisibility="Hidden">
+                                <StackPanel Spacing="10">
+                                    <RadioButton Theme="{StaticResource RadioButtonFileGroups}"
+                                                 Content="Последние файлы" FontSize="20"
+                                                 HorizontalAlignment="Stretch"
+                                                 Command="{Binding  LoadLastFilesCommand}"
+                                                 GroupName="GroupSelectors" 
+                                                 IsChecked="True"/> 
+                                    <ItemsControl ItemsSource="{Binding Groups}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel Spacing="10" />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <RadioButton Theme="{StaticResource RadioButtonFileGroups}"
+                                                             Content="{Binding GroupName}" FontSize="20"
+                                                             HorizontalAlignment="Stretch"
+                                                             Command="{Binding  $parent[ItemsControl].((vm:MainViewModel)DataContext).ConcreteGroupCommand}"
+                                                             CommandParameter="{Binding .}"
+                                                             GroupName="GroupSelectors" />
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </DockPanel>
+                    </DockPanel>
+                </Border>
+                <!--main content-->
+                <Grid Grid.Column="2" RowDefinitions="auto 20 *">
+                    <!--up-->
+                    <Grid ColumnDefinitions="* 20 *">
+                        <Button Grid.Column="0" Background="#2770D1"
+                                HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                MinHeight="120" MaxHeight="240"
+                                Height="240" CornerRadius="25"
+                                Padding="30" VerticalContentAlignment="Bottom"
+                                Foreground="White">
+                            <TextBlock Text="Легко заполняйте шаблоны документов формата Word" FontSize="20"
+                                       TextWrapping="Wrap" FontFamily="Inter" FontWeight="SemiBold" />
+                        </Button>
+                        <Button Grid.Column="2" Background="#4EBA48"
+                                HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                MinHeight="120" MaxHeight="240"
+                                Height="240" CornerRadius="25"
+                                Padding="30" VerticalContentAlignment="Bottom"
+                                Foreground="White">
+                            <TextBlock Text="Заполняйте шаблоны используя наборы данных их Excel" FontSize="20"
+                                       TextWrapping="Wrap" FontFamily="Inter" FontWeight="SemiBold" />
+                        </Button>
+                    </Grid>
+                    <!--down-->
 
-                    <Panel Grid.Column="1" Background="White"/>
-                    <Grid Grid.Column="1" Margin="40"
-                          RowDefinitions="auto 30 *">
-                        <TextBlock Text="Последние файлы" FontFamily="Inter"
-                                   FontSize="24" FontWeight="Medium"/>
-                        <ListBox Grid.Row="2" Background="white" ItemsSource="{Binding FileTemplates}">
-                            <ListBox.DataTemplates >
-                                <DataTemplate DataType="modelviewmodels:FileTemplateViewModel">
-                                    <!--0  1   2  3  4  5   6  7   8  9  10-->
-                                    <Grid ColumnDefinitions="52 12 348 40 52 30 160 30 240 40 52"
-                                          RowDefinitions="52">
-                                        <TextBlock Text="{Binding FileTypeABS}" Background="{Binding FileTypeColor, Converter={StaticResource ColorToBrushConverter}}" Padding="0 8 0 0"
-                                                   Foreground="White" TextAlignment="Center"
-                                                   FontFamily="Inter"
-                                                   FontWeight="Medium" FontSize="25"/>
-                                        <TextBlock Grid.Column="2" Text="{Binding FileName}" VerticalAlignment="Center"
-                                                   FontFamily="Inter" FontSize="26"
-                                                   FontWeight="Medium"/>
-                                        <Button Grid.Column="4" Content="&#9679;" Background="Transparent"
-                                                VerticalContentAlignment="Center" Foreground="Orange" FontSize="18" Padding="0"
-                                                Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                                                HorizontalContentAlignment="Center"/>
-                                        <TextBlock Grid.Column="6" Text="{Binding FileGroup.GroupName}" VerticalAlignment="Center"
-                                                   HorizontalAlignment="Stretch" FontFamily="Inter"
-                                                   FontSize="26" FontWeight="Medium"/>
-                                        <TextBlock Grid.Column="8" Text="{Binding LastChange}" VerticalAlignment="Center"
-                                                   HorizontalAlignment="Stretch" FontFamily="Inter"
-                                                   FontSize="26" FontWeight="Medium"/>
-                                        <Button Grid.Column="10"
-                                                HorizontalAlignment="Stretch"
-                                                VerticalAlignment="Stretch"
-                                                Background="Transparent"
-                                                Padding="0 -25 0 0"
-                                                HorizontalContentAlignment="Center"
-                                                FontFamily="Inter"
-                                                FontSize="48"
-                                                Content="...">
+                    <StackPanel Grid.Row="2">
+                        <!-- Заголовок -->
+                        <TextBlock Text="Последние файлы"
+                                   FontSize="24" FontFamily="Inter"
+                                   FontWeight="Medium"
+                                   Foreground="White" />
+
+                        <!-- Шапка колонок -->
+                        <Grid ColumnDefinitions="1.3*,40,0.6*,100,180,52"
+                              Margin="0 20 0 10">
+                            <TextBlock Grid.Column="0" Text="Название" FontWeight="SemiBold" Foreground="#ccc" />
+                            <TextBlock Grid.Column="2" Text="Группа" FontWeight="SemiBold" Foreground="#ccc" />
+                            <TextBlock Grid.Column="3" Text="Время" FontWeight="SemiBold" Foreground="#ccc" />
+                            <TextBlock Grid.Column="4" Text="Дата" FontWeight="SemiBold" Foreground="#ccc" />
+                        </Grid>
+
+                        <!-- Разделитель -->
+                        <Separator Background="#333" Margin="0 0 0 10" />
+
+                        <!-- Список файлов -->
+                        <ItemsControl ItemsSource="{Binding FileTemplates}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="modelVm:FileTemplateViewModel">
+                                    <Grid ColumnDefinitions="1.3*,40,0.6*,100,180,52">
+                                        <TextBlock Grid.Column="0" Text="{Binding FileName}" Foreground="#fff"
+                                                   TextTrimming="CharacterEllipsis" FontFamily="Inter"
+                                                   FontSize="28" FontWeight="Medium"
+                                                   VerticalAlignment="Center" />
+                                        <Ellipse Grid.Column="1" Width="18" Height="18" Fill="Yellow"
+                                                 HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                        <TextBlock Grid.Column="2" Text="{Binding FileGroup.GroupName}"
+                                                   Foreground="#fff"
+                                                   TextTrimming="CharacterEllipsis" FontFamily="Inter"
+                                                   FontSize="28" FontWeight="Medium" VerticalAlignment="Center" />
+                                        <TextBlock Grid.Column="3"
+                                                   Text="{Binding LastChange, StringFormat={}{0:HH:mm}}"
+                                                   Foreground="#fff"
+                                                   FontFamily="Inter" FontSize="28"
+                                                   FontWeight="Medium" VerticalAlignment="Center" />
+                                        <TextBlock Grid.Column="4"
+                                                   Text="{Binding LastChange, StringFormat={}{0:dd.MM.yy}}"
+                                                   Foreground="#fff"
+                                                   FontFamily="Inter" FontSize="28"
+                                                   FontWeight="Medium" VerticalAlignment="Center" />
+                                        <Button Grid.Column="5" HorizontalAlignment="Right"
+                                                Width="52" Height="52" HorizontalContentAlignment="Center"
+                                                VerticalContentAlignment="Center" VerticalAlignment="Center"
+                                                Background="Transparent" BorderThickness="0">
+                                            <Button.Content>
+                                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                                    <Ellipse Width="10" Height="10" Fill="#808080"
+                                                             HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                    <Ellipse Width="10" Height="10" Fill="#808080"
+                                                             HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                    <Ellipse Width="10" Height="10" Fill="#808080"
+                                                             HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                </StackPanel>
+                                            </Button.Content>
                                             <Button.Flyout>
-                                                <Flyout Placement="Bottom">
-                                                    <StackPanel Spacing="5">
-                                                        <Button Content="Переместить в" HorizontalAlignment="Stretch">
+                                                <Flyout>
+                                                    <StackPanel Spacing="10">
+                                                        <Button HorizontalAlignment="Stretch" Content="Открыть"
+                                                                Foreground="White"
+                                                                Command="{Binding  $parent[ItemsControl].((vm:MainViewModel)DataContext).OpenFileCommand}"
+                                                                CommandParameter="{Binding .}" />
+                                                        <Button HorizontalAlignment="Stretch"
+                                                                Content="Открыть в проводнике" Foreground="White"
+                                                                Command="{Binding  $parent[ItemsControl].((vm:MainViewModel)DataContext).OpenInExplorerCommand}"
+                                                                CommandParameter="{Binding .}" />
+                                                        <Button HorizontalAlignment="Stretch" Content="Переместить в"
+                                                                Foreground="White">
                                                             <Button.Flyout>
-                                                                <Flyout Placement="Left">
-                                                                    <ScrollViewer>
-                                                                        <ItemsControl ItemsSource="{Binding $parent[ListBox].((vm:MainViewModel)DataContext).Groups}">
-                                                                            <ItemsControl.ItemsPanel>
-                                                                                <ItemsPanelTemplate>
-                                                                                    <StackPanel Spacing="2"></StackPanel>
-                                                                                </ItemsPanelTemplate>
-                                                                            </ItemsControl.ItemsPanel>
-                                                                            <ItemsControl.ItemTemplate>
-                                                                                <DataTemplate DataType="modelviewmodels:FileGroupViewModel">
-                                                                                    <Button Content="{Binding GroupName}" HorizontalAlignment="Stretch"
-                                                                                            HorizontalContentAlignment="Left" FontSize="20" FontFamily="Inter"
-                                                                                            FontWeight="Medium" Foreground="White" Background="#585858"
-                                                                                            Command="{Binding $parent[ListBox].((vm:MainViewModel)DataContext).MoveTemplateToGroupCommand}">
-                                                                                        <Button.CommandParameter>
-                                                                                            <MultiBinding Converter="{StaticResource TwoParamsConverter}" >
-                                                                                                <Binding Path="."/>
-                                                                                                <Binding Path="$parent[Button].DataContext"/>
-                                                                                            </MultiBinding>
-                                                                                        </Button.CommandParameter>
-                                                                                    </Button>
-                                                                                </DataTemplate>
-                                                                            </ItemsControl.ItemTemplate>
-                                                                        </ItemsControl>
-                                                                    </ScrollViewer>
+                                                                <Flyout>
+                                                                    <ItemsControl
+                                                                        ItemsSource="{Binding $parent[ItemsControl].((vm:MainViewModel)DataContext).Groups}">
+                                                                        <ItemsControl.ItemsPanel>
+                                                                            <ItemsPanelTemplate>
+                                                                                <StackPanel Spacing="10"></StackPanel>
+                                                                            </ItemsPanelTemplate>
+                                                                        </ItemsControl.ItemsPanel>
+                                                                        <ItemsControl.ItemTemplate>
+                                                                            <DataTemplate
+                                                                                DataType="modelVm:FileGroupViewModel">
+                                                                                <Button HorizontalAlignment="Stretch"
+                                                                                    Content="{Binding GroupName}"
+                                                                                    Foreground="White"
+                                                                                    Width="120"
+                                                                                    Command="{Binding  $parent[UserControl].((vm:MainViewModel)DataContext).MoveTemplateToGroupCommand}">
+                                                                                    <Button.CommandParameter>
+                                                                                        <MultiBinding
+                                                                                            Converter="{StaticResource TwoParamsConverter}">
+                                                                                            <Binding Path="." />
+                                                                                            <Binding Path="$parent[Grid].DataContext" />
+                                                                                        </MultiBinding>
+                                                                                    </Button.CommandParameter>
+                                                                                </Button>
+                                                                            </DataTemplate>
+                                                                        </ItemsControl.ItemTemplate>
+                                                                    </ItemsControl>
                                                                 </Flyout>
                                                             </Button.Flyout>
                                                         </Button>
-                                                        <Button Content="Удалить из списка" HorizontalAlignment="Stretch"
-                                                                Command="{Binding $parent[ListBox].((vm:MainViewModel)DataContext).RemoveFileTemplateCommand}"
-                                                                CommandParameter="{Binding .}"/>
-                                                        <Button Content="Открыть" HorizontalAlignment="Stretch"
-                                                                Command="{Binding $parent[ListBox].((vm:MainViewModel)DataContext).OpenFileCommand}"
-                                                                CommandParameter="{Binding .}"/>
-                                                        <Button Content="Открыть в проводнике" HorizontalAlignment="Stretch"
-                                                                Command="{Binding $parent[ListBox].((vm:MainViewModel)DataContext).OpenInExplorerCommand}"
-                                                                CommandParameter="{Binding .}"/>
+                                                        <Button HorizontalAlignment="Stretch" Content="Удалить из группы"
+                                                                Foreground="White" Background="OrangeRed"
+                                                                Command="{Binding  $parent[ItemsControl].((vm:MainViewModel)DataContext).RemoveFileTemplateFromGroupsCommand}"
+                                                                CommandParameter="{Binding .}" />
+                                                        <Button HorizontalAlignment="Stretch" Content="Удалить"
+                                                                Foreground="White" Background="OrangeRed"
+                                                                Command="{Binding  $parent[ItemsControl].((vm:MainViewModel)DataContext).RemoveFileTemplateCommand}"
+                                                                CommandParameter="{Binding .}" />
                                                     </StackPanel>
                                                 </Flyout>
                                             </Button.Flyout>
                                         </Button>
                                     </Grid>
                                 </DataTemplate>
-                            </ListBox.DataTemplates>
-                        </ListBox>
-                    </Grid>
-
-                    <Panel Grid.Column="2" Background="White" Width="360"/>
-                    <StackPanel Spacing="20" Grid.Column="2">
-                        <DockPanel Background="#585858" Width="360" Height="360">
-                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
-                                        Spacing="6">
-                                <Ellipse Width="13" Height="13" Fill="White" />
-                                <TextBlock Text="Перетащи" Foreground="White" FontFamily="Inter"
-                                           FontSize="20" FontWeight="SemiBold"/>
-                            </StackPanel>
-                        </DockPanel>
-                        <Button Background="#585858" Width="360" Height="360">
-                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
-                                        Spacing="6">
-                                <Ellipse Width="13" Height="13" Fill="White" />
-                                <TextBlock Text="Создать" Foreground="White" FontFamily="Inter"
-                                           FontSize="20" FontWeight="SemiBold"/>
-                            </StackPanel>
-                        </Button>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </StackPanel>
-
                 </Grid>
             </Grid>
         </avalonia:RoutedViewHost.DefaultContent>

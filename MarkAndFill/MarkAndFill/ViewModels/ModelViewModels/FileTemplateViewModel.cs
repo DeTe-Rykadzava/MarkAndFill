@@ -1,97 +1,84 @@
-﻿using Avalonia.Media;
-using MarkAndFill.Base.Services;
-using MarkAndFill.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using MarkAndFill.Base.Services;
+using MarkAndFill.Model;
 
-namespace MarkAndFill.ViewModels.ModelViewModels
+namespace MarkAndFill.ViewModels.ModelViewModels;
+
+public class FileTemplateViewModel
 {
-    public class FileTemplateViewModel
+    private readonly FileTemplate _fileTemplate;
+
+    public FileTemplateViewModel(FileTemplate fileTemplate)
     {
-        private readonly FileTemplate _fileTemplate;
+        _fileTemplate = fileTemplate;
+        FileGroup = new FileGroupViewModel(fileTemplate.FileGroup);
+        FileName = _fileTemplate.Filename;
+    }
 
-        private string _fileName;
+    public string FileName { get; set; }
 
-        public string FileName
+    public string FilePath => _fileTemplate.FilePath;
+    public FileGroupViewModel FileGroup { get; private set; }
+
+    public DateTime LastChange => _fileTemplate.LastChange;
+
+    public string FileTypeExtension
+    {
+        get
         {
-            get { return _fileName; }
-            set { _fileName = value; }
+            if (_fileTemplate.FileType == FileType.Word)
+                return "W";
+            return "M";
         }
+    }
 
-        public string FilePath { get => _fileTemplate.FilePath; }
-        public string FileDirectoryPath { get => _fileTemplate.FileDirectoryPath; }
-
-        public FileGroupViewModel FileGroup { get; private set; }
-
-        public DateTime LastChange => _fileTemplate.LastChange;
-
-        public string FileTypeABS
+    public string FileTypeColor
+    {
+        get
         {
-            get
-            {
-                if (_fileTemplate.FileType == FileType.Word)
-                    return "W";
-                else
-                    return "M";
-            }
+            if (_fileTemplate.FileType == FileType.Word)
+                return "#1E7BF5";
+            return "#171719";
         }
+    }
 
-        public string FileTypeColor
+    public static List<FileTemplateViewModel> FileTemplates
+    {
+        get
         {
-            get
-            {
-                if (_fileTemplate.FileType == FileType.Word)
-                    return "#1E7BF5";
-                else
-                    return "#171719";
-            }
+            var result = LastFilesService.GetAllPaths();
+            return result.Select(s => new FileTemplateViewModel(s)).ToList();
         }
+    }
 
-        public static List<FileTemplateViewModel> FileTemplates
-        {
-            get
-            {
-                var result = LastFilesService.GetAllPaths();
-                return result.Select(s => new FileTemplateViewModel(s)).ToList();
-            }
-        }
+    public async Task<bool> MoveToGroup(FileGroupViewModel group)
+    {
+        var groupModel = FileGroupService.GetAllGroups().Where(x => x.GroupName == group.GroupName).FirstOrDefault();
+        if (groupModel == null)
+            return false;
+        LastFilesService.RemoveFile(_fileTemplate);
+        _fileTemplate.FileGroup = groupModel;
+        LastFilesService.SetFile(_fileTemplate);
+        await LastFilesService.SaveAsync();
+        return true;
+    }
 
-        public FileTemplateViewModel(FileTemplate fileTemplate)
+    public static async Task<bool> Remove(FileTemplateViewModel file)
+    {
+        try
         {
-            _fileTemplate = fileTemplate;
-            FileGroup = new FileGroupViewModel(fileTemplate.FileGroup);
-            _fileName = _fileTemplate.Filename;
-        }
-
-        public async Task<bool> MoveToGroup(FileGroupViewModel group) 
-        {
-            var groupModel = FileGroupService.GetAllGroups().Where(x => x.GroupName == group.GroupName).FirstOrDefault();
-            if(groupModel == null)
-                return false;
-            LastFilesService.RemoveFile(_fileTemplate);
-            _fileTemplate.FileGroup = groupModel;
-            LastFilesService.SetFile(_fileTemplate);
+            LastFilesService.RemoveFile(file._fileTemplate);
             await LastFilesService.SaveAsync();
             return true;
         }
-
-        public static async Task<bool> Remove(FileTemplateViewModel file) 
+        catch (Exception)
         {
-            try
-            {
-                LastFilesService.RemoveFile(file._fileTemplate);
-                await LastFilesService.SaveAsync();
-                return true;
-            }
-            catch (Exception)
-            {
-                Debug.WriteLine("Error while remove fileTemplate from list");
-                return false;
-            }
+            Debug.WriteLine("Error while remove fileTemplate from list");
+            return false;
         }
     }
 }

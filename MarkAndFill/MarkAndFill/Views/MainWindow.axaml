@@ -4,20 +4,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="using:MarkAndFill.Views"
-        mc:Ignorable="d" d:DesignWidth="1920" d:DesignHeight="1080"
+        mc:Ignorable="d"
         x:Class="MarkAndFill.Views.MainWindow"
         x:DataType="vm:MainViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="MarkAndFill"
-        Width="1920"
-        Height="1080"
         CanMaximize="True"
-        MinWidth="1920"
-        MinHeight="1080"
-        >
+        MinHeight="700"
+        MinWidth="1400">
     <Design.DataContext>
-        <vm:MainViewModel/>
+        <vm:MainViewModel />
     </Design.DataContext>
 
-    <views:MainView/>
+    <views:MainView />
 </Window>

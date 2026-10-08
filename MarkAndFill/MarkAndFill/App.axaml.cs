@@ -1,25 +1,26 @@
 ﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using MarkAndFill.Base;
+using MarkAndFill.Base.Services;
 using MarkAndFill.ViewModels;
 using MarkAndFill.Views;
 using MarkAndFill.Views.ManagersPages;
 using ReactiveUI;
 using Splat;
-using MarkAndFill.Base.Services;
 
 namespace MarkAndFill;
 
-public partial class App : Application
+public class App : Application
 {
     public App()
     {
         Locator.CurrentMutable.Register(() => new WordManagerView(), typeof(IViewFor<WordManagerViewModel>));
         LastFilesService.InitAsync().GetAwaiter().GetResult();
         FileGroupService.InitAsync().GetAwaiter().GetResult();
+        FileTemplatesAppDirectoryService.Init();
     }
-    
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -31,12 +32,10 @@ public partial class App : Application
     public override void OnFrameworkInitializationCompleted()
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        {
             desktop.MainWindow = new MainWindow
             {
                 DataContext = new MainViewModel()
             };
-        }
         //else if (ApplicationLifetime is IActivityApplicationLifetime singleViewFactoryApplicationLifetime)
         //{
         //    singleViewFactoryApplicationLifetime.MainViewFactory = () => new PageNavigationHost()

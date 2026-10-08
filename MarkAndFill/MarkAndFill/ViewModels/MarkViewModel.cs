@@ -1,59 +1,48 @@
 ﻿using MarkAndFill.Model;
 using ReactiveUI;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace MarkAndFill.ViewModels
+namespace MarkAndFill.ViewModels;
+
+public class MarkViewModel : ViewModelBase
 {
-    public class MarkViewModel : ViewModelBase
+    private readonly Mark _mark;
+
+    private int _count;
+
+    private string _tagName;
+
+    private string? _tagValue = string.Empty;
+
+    public MarkViewModel(Mark mark)
     {
-        private readonly Mark _mark;
+        _mark = mark;
+        _tagName = _mark.TagName;
+    }
 
-        private string _tagName;
+    public MarkViewModel(Mark mark, int count)
+    {
+        _mark = mark;
+        _tagName = _mark.TagName;
+        _count = count;
+    }
 
-        public string TagName
-        {
-            get { return _tagName; }
-            private set
-            {
-                this.RaiseAndSetIfChanged(ref _tagName, value);
-            }
-        }
+    public string TagName
+    {
+        get => _tagName;
+        private set => this.RaiseAndSetIfChanged(ref _tagName, value);
+    }
 
-        private string? _tagValue = string.Empty;
+    public string DisplayName => _tagName?.Trim('{', '}') ?? string.Empty;
 
-        public string? TagValue
-        {
-            get { return _tagValue; }
-            set
-            {
-                this.RaiseAndSetIfChanged(ref _tagValue, value);
-            }
-        }
+    public string? TagValue
+    {
+        get => _tagValue;
+        set => this.RaiseAndSetIfChanged(ref _tagValue, value);
+    }
 
-        private int _count = 0;
-
-        public int Count
-        {
-            get { return _count; }
-            set
-            {
-                this.RaiseAndSetIfChanged(ref _count, value);
-            }
-        }
-
-        public MarkViewModel(Mark mark)
-        {
-            _mark = mark;
-            _tagName = _mark.TagName;
-        }
-
-        public MarkViewModel(Mark mark, int count)
-        {
-            _mark = mark;
-            _tagName = _mark.TagName;
-            _count = count;
-        }
+    public int Count
+    {
+        get => _count;
+        set => this.RaiseAndSetIfChanged(ref _count, value);
     }
 }
