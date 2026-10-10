@@ -28,25 +28,29 @@ public class WordManagerViewModel : ViewModelBase, IRoutableViewModel
         HostScreen = hostScreen;
         ReplaceMarksCommand = ReactiveCommand.CreateFromTask(async () =>
         {
-            var targetFileInfo = await ReplaceMarksInteraction.Handle(Unit.Default);
-            if (targetFileInfo == null)
-                return;
-            File.Copy(_file.FilePath, targetFileInfo.FullName, true);
-            var marksForReplace = Marks.Where(s => !string.IsNullOrWhiteSpace(s.TagValue)).ToList();
-            _wordManager.ReplaceTags(targetFileInfo.FullName,
-                marksForReplace.ToDictionary(k => k.TagName, v => v.TagValue!));
+            try
+            {
+                var targetFileInfo = await ReplaceMarksInteraction.Handle(Unit.Default);
+                if (targetFileInfo == null)
+                    return;
+                File.Copy(_file.FilePath, targetFileInfo.FullName, true);
+                var marksForReplace = Marks.Where(s => !string.IsNullOrWhiteSpace(s.TagValue)).ToList();
+                _wordManager.ReplaceTags(targetFileInfo.FullName,
+                    marksForReplace.ToDictionary(k => k.TagName, v => v.TagValue!));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         });
-        GoBackCommand = ReactiveCommand.CreateFromTask(async () =>
-        {
-            await HostScreen.Router.NavigateBack.Execute();
-        });
+        GoBackCommand = ReactiveCommand.CreateFromTask(async () => { await HostScreen.Router.NavigateBack.Execute(); });
         // Task.Run(() => { Init();});
         Init();
     }
 
     public WordManagerViewModel()
     {
-        
     }
 
     public string FileName => _file.FileName;
@@ -55,13 +59,13 @@ public class WordManagerViewModel : ViewModelBase, IRoutableViewModel
     public ObservableCollection<MarkViewModel> Marks { get; } = new();
 
     private int _countOfEcvivalentesTags;
-    
+
     public int CountOfEcvivalentesTags
     {
-        get => _countOfEcvivalentesTags; 
-        set=> this.RaiseAndSetIfChanged(ref _countOfEcvivalentesTags, value); 
+        get => _countOfEcvivalentesTags;
+        set => this.RaiseAndSetIfChanged(ref _countOfEcvivalentesTags, value);
     }
-    
+
     public ICommand ReplaceMarksCommand { get; }
 
     public ICommand GoBackCommand { get; }
