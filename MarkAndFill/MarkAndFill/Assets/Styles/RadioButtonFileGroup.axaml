@@ -1,0 +1,98 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20" Background="Gray" Width="400">
+            <StackPanel Spacing="10">
+                <RadioButton HorizontalAlignment="Stretch" Theme="{DynamicResource RadioButtonFileGroups}" IsChecked="True" Content="я нажата " BorderThickness="0 0 3 0" />
+                <RadioButton Theme="{DynamicResource RadioButtonFileGroups}" Content="наведи на меня" BorderThickness="0 0 3 0" />
+                <RadioButton Theme="{DynamicResource RadioButtonFileGroups}" Content="наведи на меня" />
+                <RadioButton Theme="{DynamicResource RadioButtonFileGroups}" IsEnabled="False" Content="выключена" BorderThickness="0 0 3 0" />
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+
+    <Color x:Key="RaBGroupFileColor">#161616</Color>
+    <Color x:Key="RaFGroupFileColor">#fff</Color>
+    <Color x:Key="RaBrushGroupFileColor">#161616</Color>
+    <Color x:Key="RaCheckBrushGroupFileColor">#2770D1</Color>
+    <Color x:Key="RaHoverBrushGroupFileColor">#303030</Color>
+    <Color x:Key="RaDisFGroupFileColor">#bbb</Color>
+    <Color x:Key="RaDisBGroupFileColor">#111111</Color>
+    <LinearGradientBrush x:Key="RaBHovGroupFileColor">
+        <GradientStop Color="#222222" Offset="0.6" />
+        <GradientStop Color="#303030" Offset="0.99" />
+    </LinearGradientBrush>
+    <Thickness x:Key="RaBGroupFileThickness">0 0 3 0</Thickness>
+
+    <ControlTheme x:Key="RadioButtonFileGroups" TargetType="RadioButton">
+        <Setter Property="Background" Value="{DynamicResource RaBGroupFileColor}" />
+        <Setter Property="Foreground" Value="{DynamicResource RaFGroupFileColor}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource RaBrushGroupFileColor}" />
+        <Setter Property="BorderThickness" Value="{DynamicResource RaBGroupFileThickness}"/>
+        <Setter Property="CornerRadius" Value="15" />
+        <Setter Property="Padding" Value="23" />
+        <!-- временно -->
+
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate TargetType="RadioButton">
+                <Border
+                    Name="RootBorder"
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    CornerRadius="{TemplateBinding CornerRadius}"
+                    BorderThickness="{TemplateBinding BorderThickness}">
+                    <StackPanel Orientation="Horizontal" Spacing="15" Margin="{TemplateBinding Padding}">
+                        <Ellipse Name="RBEllipse" Fill="{TemplateBinding Foreground}" Width="18" Height="18" />
+                        <ContentPresenter
+                            Name="PART_ContentPresenter"
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                            Content="{TemplateBinding Content}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                            Foreground="{TemplateBinding Foreground}" />
+                    </StackPanel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="RecognizesAccessKey" Value="True" />
+        </Style>
+
+        <!--  PointerOver State  -->
+
+        <Style Selector="^:pointerover /template/ Border#RootBorder">
+            <Setter Property="Background" Value="{DynamicResource RaBHovGroupFileColor}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource RaHoverBrushGroupFileColor}"/>
+        </Style>
+
+        <!--  Pressed State  -->
+ 
+        <Style Selector="^:pressed /template/ Border#RootBorder">
+            <Setter Property="Background" Value="{DynamicResource RaBHovGroupFileColor}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource RaCheckBrushGroupFileColor}"/>
+        </Style>
+
+        <!--  Disabled State  -->
+        <Style Selector="^:disabled /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="{DynamicResource RaDisFGroupFileColor}" />
+        </Style>
+        <Style Selector="^:disabled /template/ Ellipse#RBEllipse">
+            <Setter Property="Fill" Value="{DynamicResource RaDisFGroupFileColor}" />
+        </Style>
+ 
+        <Style Selector="^:disabled /template/ Border#RootBorder">
+            <Setter Property="Background" Value="{DynamicResource RaDisBGroupFileColor}" />
+        </Style>
+
+        <!--  Checked State  -->
+        <Style Selector="^:checked /template/ Border#RootBorder">
+            <Setter Property="Background" Value="{DynamicResource RaBHovGroupFileColor}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource RaCheckBrushGroupFileColor}"/>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>
